@@ -4,3 +4,4 @@ python-dotenv
 langchain
 PyPDF2
 chromadb
+PyMuPDF
