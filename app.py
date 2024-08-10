@@ -57,9 +57,9 @@ def get_gemini_response(input_text, prompt):
         return f"An error occurred: {str(e)}"
 
 # Initialize Streamlit app
-st.set_page_config(page_title="MultiLanguage Invoice Extractor")
+st.set_page_config(page_title="AI Invoice Extractor")
 
-st.header("MultiLanguage Invoice Extractor")
+st.header("AI Invoice Extractor")
 
 # Revised prompt
 input_prompt = """
