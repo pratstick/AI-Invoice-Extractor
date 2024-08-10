@@ -98,7 +98,7 @@ Installation
 Deployment
 ----------
 
-###Deploying on Streamlit Community Cloud
+### Deploying on Streamlit Community Cloud
 
 1.  **Create a New App**
     
