@@ -1,0 +1,13 @@
+prefix=/home/pratyush/repos/AI-Invoice-Extractor/venv
+exec_prefix=/home/pratyush/repos/AI-Invoice-Extractor/venv
+libdir=/home/pratyush/repos/AI-Invoice-Extractor/venv/lib
+sharedlibdir=/home/pratyush/repos/AI-Invoice-Extractor/venv/lib
+includedir=/home/pratyush/repos/AI-Invoice-Extractor/venv/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

@@ -1,0 +1,11 @@
+prefix=/home/pratyush/repos/AI-Invoice-Extractor/venv
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+toolexeclibdir=${libdir}
+includedir=/home/pratyush/repos/AI-Invoice-Extractor/venv/include
+
+Name: libffi
+Description: Library supporting Foreign Function Interfaces
+Version: 3.3
+Libs: -L${toolexeclibdir} -lffi
+Cflags: -I${includedir}

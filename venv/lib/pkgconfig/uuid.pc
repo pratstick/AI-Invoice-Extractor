@@ -1,0 +1,11 @@
+prefix=/home/pratyush/repos/AI-Invoice-Extractor/venv
+exec_prefix=/home/pratyush/repos/AI-Invoice-Extractor/venv
+libdir=/home/pratyush/repos/AI-Invoice-Extractor/venv/lib
+includedir=/home/pratyush/repos/AI-Invoice-Extractor/venv/include
+
+Name: uuid
+Description: Universally unique id library
+Version: 2.32.1
+Requires:
+Cflags: -I${includedir}/uuid
+Libs: -L${libdir} -luuid
