@@ -1,7 +1,6 @@
+python-dotenv
+Pillow
 streamlit
 google-generativeai
-python-dotenv
-langchain
-PyPDF2
-chromadb
 PyMuPDF
+pytesseract
