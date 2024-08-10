@@ -1,9 +1,9 @@
-AI Invoice Analyzer
+AI Invoice Extractor
 ===================
 
 **Overview**
 
-AI-Invoice-Analyzer is a web application built with Streamlit that allows users to upload invoices in different formats, such as images or PDFs. The application extracts text from these uploaded files and provides detailed analysis based on the content of the invoices.
+AI-Invoice-Extractor is a web application built with Streamlit that allows users to upload invoices in different formats, such as images or PDFs. The application extracts text from these uploaded files and provides detailed analysis based on the content of the invoices.
 
 Features
 --------
