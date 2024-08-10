@@ -1,23 +1,26 @@
-**AI-Invoice-Analyzer**
+AI Invoice Analyzer
+===================
 
 **Overview**
 
 AI-Invoice-Analyzer is a web application built with Streamlit that allows users to upload invoices in different formats, such as images or PDFs. The application extracts text from these uploaded files and provides detailed analysis based on the content of the invoices.
 
-**Features**
+Features
+--------
 
-*   **Text Extraction:** The application can extract text from image files using Optical Character Recognition (OCR) and from PDF documents.
-*   **Invoice Analysis:** It analyzes the extracted text to answer specific questions about the invoice.
-*   **User Interface:** The app has a simple and interactive web interface built with Streamlit.
+-   **Text Extraction:** The application can extract text from image files using Optical Character Recognition (OCR) and from PDF documents.
+-   **Invoice Analysis:** It analyzes the extracted text to answer specific questions about the invoice.
+-   **User Interface:** The app has a simple and interactive web interface built with Streamlit.
 
-**Installation**
+Installation
+------------
 
-**Prerequisites**
+### Prerequisites
 
-*   Python 3.7 or higher
-*   Tesseract OCR engine
+-   Python 3.7 or higher
+-   Tesseract OCR engine
 
-**Setup Steps**
+### Setup Steps
 
 1.  **Clone the Repository**
     
@@ -79,7 +82,7 @@ AI-Invoice-Analyzer is a web application built with Streamlit that allows users 
     `GOOGLE_API_KEY=your_google_api_key_here` 
     
 
-**Running the Application**
+### Running the Application
 
 1.  **Start the Streamlit App**
     
@@ -92,9 +95,10 @@ AI-Invoice-Analyzer is a web application built with Streamlit that allows users 
     Open your web browser and go to `http://localhost:8501` to use the application.
     
 
-**Deployment**
+Deployment
+----------
 
-**Deploying on Streamlit Community Cloud**
+###Deploying on Streamlit Community Cloud
 
 1.  **Create a New App**
     
@@ -109,7 +113,7 @@ AI-Invoice-Analyzer is a web application built with Streamlit that allows users 
     Click "Deploy" to start the deployment process. Streamlit Community Cloud will automatically install dependencies and deploy your app.
     
 
-**Deploying on Other Platforms**
+### Deploying on Other Platforms
 
 For other cloud platforms like Heroku or AWS, follow their respective documentation for deploying Python web applications. You may need to adjust the configuration for environment variables and dependency management.
 
@@ -122,11 +126,13 @@ For other cloud platforms like Heroku or AWS, follow their respective documentat
 3.  **Analyze:** Click the "Tell me about my invoice" button to get detailed responses based on the extracted text.
     
 
-**Contributing**
+Contributing
+------------
 
 Feel free to fork the repository and submit pull requests. Make sure any contributions are well-documented and tested.
 
-**License**
+License
+-------
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
