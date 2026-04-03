@@ -1,115 +1,135 @@
 # AI Invoice Extractor
-=====================
 
-## Overview
-
-AI-Invoice-Extractor is a professional web application built with Streamlit that enables users to upload invoices in various formats (PDF, JPEG, PNG) and extract structured data using advanced OCR and Google Gemini AI. The application provides a modern, interactive interface for extracting, analyzing, and downloading invoice data.
+A production-grade Streamlit web application that extracts structured data from invoice PDFs and images using Google Gemini AI and Tesseract OCR.
 
 ## Features
 
-- **Text Extraction:** Extracts text from images (using Tesseract OCR) and PDF documents.
-- **AI-Powered Invoice Analysis:** Utilizes Google Gemini AI to extract structured invoice fields and line items.
-- **Interactive Web Interface:** Clean, user-friendly UI built with Streamlit, including dynamic tables and download options.
-- **Download Options:** Export extracted data as CSV or JSON.
-- **Robust Error Handling:** User-friendly error messages and input validation throughout the app.
-- **Deployment Ready:** Easily deployable on Streamlit Community Cloud or other platforms.
+- **AI-Powered Extraction** — Uses Google Gemini 2.0 Flash (vision-capable) to parse invoice fields and line items into structured JSON.
+- **OCR Preview** — Tesseract OCR extracts raw text from images and PDFs for a quick preview before AI analysis.
+- **Multiple Prompt Templates** — Choose between General Invoice, Minimal, or Line Items Only extraction modes.
+- **Interactive Tables** — Results are displayed in sortable, paginated tables powered by itables.
+- **Export** — Download extracted data as CSV or JSON with a single click.
+- **Robust Error Handling** — Friendly messages for API errors, malformed AI responses, unsupported files, and oversized uploads.
 
-## Installation
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| UI | [Streamlit](https://streamlit.io) |
+| AI | [Google Gemini 2.0 Flash](https://ai.google.dev) via `google-genai` SDK |
+| OCR | [Tesseract](https://github.com/tesseract-ocr/tesseract) + [pytesseract](https://github.com/madmaze/pytesseract) |
+| PDF parsing | [PyMuPDF (fitz)](https://pymupdf.readthedocs.io) |
+| Tables | [itables](https://mwouts.github.io/itables) + [pandas](https://pandas.pydata.org) |
+
+## Architecture
+
+```
+AI-Invoice-Extractor/
+├── app.py                  # Thin Streamlit entrypoint
+├── src/
+│   ├── config.py           # Constants and prompt templates
+│   ├── extractors.py       # PDF/image OCR text extraction
+│   ├── ai_client.py        # Google Gemini client (cached)
+│   └── ui.py               # Reusable Streamlit UI components
+├── tests/
+│   ├── test_extractors.py  # Unit tests for extractors & utilities
+│   └── test_ui.py          # Unit tests for UI helpers
+├── .env.example            # Environment variable template
+├── packages.txt            # System-level apt packages (for Streamlit Cloud)
+└── requirements.txt        # Python dependencies
+```
+
+## Setup
 
 ### Prerequisites
 
-- Python 3.7 or higher
-- Tesseract OCR engine (for image extraction)
+- Python 3.10+
+- Tesseract OCR engine
+- A [Google AI Studio API key](https://aistudio.google.com/app/apikey)
 
-### Setup Instructions
+### Install Tesseract
 
-1. **Clone the Repository**
+| Platform | Command |
+|---|---|
+| Debian/Ubuntu | `sudo apt-get install tesseract-ocr` |
+| macOS | `brew install tesseract` |
+| Windows | [Download installer](https://github.com/tesseract-ocr/tesseract/releases) |
 
-   ```bash
-   git clone https://github.com/pratstick/AI-Invoice-Extractor.git
-   cd AI-Invoice-Extractor
-   ```
+### Install & Run
 
-2. **Create and Activate a Virtual Environment**
+```bash
+# 1. Clone the repo
+git clone https://github.com/pratstick/AI-Invoice-Extractor.git
+cd AI-Invoice-Extractor
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+# 2. Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
 
-3. **Install Dependencies**
+# 3. Install dependencies
+pip install -r requirements.txt
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+# 4. Configure environment variables
+cp .env.example .env
+# Edit .env and set GOOGLE_API_KEY=your_key_here
 
-4. **Install Tesseract OCR Engine**
+# 5. Run the app
+streamlit run app.py
+```
 
-   - **Debian/Ubuntu:**
-     ```bash
-     sudo apt-get install tesseract-ocr
-     ```
-   - **macOS (Homebrew):**
-     ```bash
-     brew install tesseract
-     ```
-   - **Windows:**
-     Download and install from [Tesseract Releases](https://github.com/tesseract-ocr/tesseract/releases). Ensure the Tesseract executable is in your system PATH.
+Open [http://localhost:8501](http://localhost:8501) in your browser.
 
-5. **Set Up Environment Variables**
+## Usage
 
-   Create a `.env` file in the project root and add your Google API key:
-   ```
-   GOOGLE_API_KEY=your_google_api_key_here
-   ```
+1. **Upload** a PDF or image (JPG/PNG) invoice using the sidebar.
+2. **Select** an extraction prompt template.
+3. **Click** "Analyze Invoice" to run Gemini AI extraction.
+4. **Review** the interactive tables and download results as CSV or JSON.
 
-## Running the Application
+## Environment Variables
 
-1. **Start the Streamlit App**
+| Variable | Description |
+|---|---|
+| `GOOGLE_API_KEY` | Your Google AI Studio API key |
 
-   ```bash
-   streamlit run app.py
-   ```
+## Testing
 
-2. **Access the Application**
-
-   Open your browser and navigate to [http://localhost:8501](http://localhost:8501).
+```bash
+pytest tests/ -v
+```
 
 ## Deployment
 
 ### Streamlit Community Cloud
 
-1. **Create a New App**
-   - Log in to Streamlit Community Cloud and click "New app".
-   - Link your GitHub repository.
-2. **Configure Deployment**
-   - Set the entry point to `app.py`.
-   - Add your Google API key as a secret or in the `.env` file.
-3. **Deploy**
-   - Click "Deploy". Streamlit Cloud will install dependencies and launch your app.
+1. Push this repo to GitHub.
+2. Go to [share.streamlit.io](https://share.streamlit.io) → "New app".
+3. Point it at `app.py`.
+4. Add `GOOGLE_API_KEY` under **Settings → Secrets**.
+5. Click **Deploy** — `packages.txt` ensures Tesseract is installed automatically.
 
-### Other Platforms
+### Docker
 
-For platforms such as Heroku or AWS, follow their respective deployment guides for Python web applications. Ensure environment variables and dependencies are configured appropriately.
+```dockerfile
+FROM python:3.12-slim
+RUN apt-get update && apt-get install -y tesseract-ocr && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+EXPOSE 8501
+CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0"]
+```
 
-## Usage
-
-1. **Upload Invoice:** Select a PDF or image (JPEG, PNG) of your invoice.
-2. **Select Prompt:** Choose or customize the extraction prompt as needed.
-3. **Analyze:** Click the "Analyze Invoice" button to extract and view structured data.
-4. **Download:** Export results as CSV or JSON for further processing.
-
-## Testing
-
-- Unit tests are located in the `tests/` directory. To run tests:
-  ```bash
-  pytest tests/
-  ```
+```bash
+docker build -t ai-invoice-extractor .
+docker run -e GOOGLE_API_KEY=your_key -p 8501:8501 ai-invoice-extractor
+```
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request. Ensure your code is well-documented and tested.
+Contributions are welcome! Fork the repository and submit a pull request. Ensure new code is tested and documented.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+MIT — see [LICENSE](LICENSE).
