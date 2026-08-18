@@ -1,13 +1,6 @@
-"""
-AI Invoice Extractor — main Streamlit entrypoint.
+"""Streamlit entrypoint for AI Invoice Extractor."""
 
-All business logic lives in the src/ package:
-  src/config.py       - constants & prompt templates
-  src/extractors.py   - PDF/image text extraction
-  src/ai_client.py    - Google Gemini integration
-  src/ui.py           - Streamlit UI components
-"""
-
+import hashlib
 import json
 
 import streamlit as st
@@ -25,207 +18,127 @@ from src.ui import (
     sidebar_settings,
 )
 
-# ---------------------------------------------------------------------------
-# Page config
-# ---------------------------------------------------------------------------
-st.set_page_config(
-    page_title="AI Invoice Extractor",
-    page_icon="🧾",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
+st.set_page_config(page_title="Invoice Lens", page_icon="🧾", layout="wide")
 
 st.markdown(
     """
-<style>
-.big-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #2d6cdf;
-    margin-bottom: 0.2em;
-}
-.subtext {
-    font-size: 1.1rem;
-    color: #444;
-    margin-bottom: 1.5em;
-}
-.stButton>button {
-    background-color: #2d6cdf;
-    color: white;
-    font-weight: 600;
-    border-radius: 6px;
-    padding: 0.5em 1.5em;
-    margin-top: 0.5em;
-}
-.stDownloadButton>button {
-    background-color: #e0e7ff;
-    color: #2d6cdf;
-    font-weight: 600;
-    border-radius: 6px;
-    margin-right: 0.5em;
-}
-.stTable, .stDataFrame, .itables-container {
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 1em;
-    margin-bottom: 1.5em;
-}
-</style>
-<div class="big-title">🧾 AI Invoice Extractor</div>
-<div class="subtext">
-  Extract invoice data from PDFs and images using AI.
-  Enjoy interactive tables and easy downloads!
-</div>
-""",
+    <style>
+      .block-container { max-width: 1200px; padding-top: 2.5rem; padding-bottom: 3rem; }
+      [data-testid="stMetric"] { background: #f6f8fc; border: 1px solid #e6eaf2;
+        border-radius: 12px; padding: .8rem 1rem; }
+      [data-testid="stDownloadButton"] button { width: 100%; }
+      .hero { font-size: 2.65rem; font-weight: 750; letter-spacing: -.045em; margin: 0; }
+      .eyebrow { color: #52647a; font-size: 1.05rem; margin: .35rem 0 1.75rem; }
+    </style>
+    <p class="hero">Invoice Lens <span style="font-size:1.8rem">🧾</span></p>
+    <p class="eyebrow">Turn PDFs and scans into structured, exportable invoice data.</p>
+    """,
     unsafe_allow_html=True,
 )
 
-# ---------------------------------------------------------------------------
-# Sidebar
-# ---------------------------------------------------------------------------
 with st.sidebar:
-    st.markdown(
-        """
-<div style='font-size:1.2rem;font-weight:600;color:#2d6cdf;'>Quick Start</div>
-<ol style='margin-top:0.5em;'>
-  <li>Upload an invoice (PDF or image).</li>
-  <li>Select the extraction prompt.</li>
-  <li>Click <b>Analyze Invoice</b>.</li>
-</ol>
-<hr style='margin:0.7em 0;'>
-<div style='color:#444;'>
-<b>About:</b> This app uses Google Gemini AI to extract invoice data and display it
-in interactive tables. Download your results as CSV or JSON.
-</div>
-""",
-        unsafe_allow_html=True,
-    )
+    st.header("Extraction settings")
+    st.caption("Your document is processed only when you choose to analyze it.")
 
 prompt_type, uploaded_file = sidebar_settings()
-input_prompt = PROMPT_TEMPLATES[prompt_type]
 api_key = load_api_key()
+input_prompt = PROMPT_TEMPLATES[prompt_type]
 
-# ---------------------------------------------------------------------------
-# File upload & OCR extraction
-# ---------------------------------------------------------------------------
-if uploaded_file:
-    if uploaded_file.type not in SUPPORTED_TYPES:
-        st.error("Unsupported file type. Please upload a PDF or image (JPG, PNG).")
-        st.stop()
+if not api_key:
+    st.sidebar.warning("Add `GOOGLE_API_KEY` to `.env` to enable AI extraction.")
 
-    if uploaded_file.size > MAX_FILE_SIZE_MB * 1024 * 1024:
-        st.error(
-            f"File too large! Max size is {MAX_FILE_SIZE_MB} MB. Please upload a smaller file."
-        )
-        st.stop()
 
-    file_type = uploaded_file.type
-    st.info(f"Detected file type: {SUPPORTED_TYPES.get(file_type, 'Unknown')}")
+def reset_results_for(file_id: str) -> None:
+    """Discard results belonging to a previously uploaded file."""
+    if st.session_state.get("file_id") != file_id:
+        for key in ("extracted_text", "extracted_pages", "fields", "gemini_result", "gemini_raw"):
+            st.session_state.pop(key, None)
+        st.session_state["file_id"] = file_id
 
-    with st.spinner("Extracting text from your invoice. Please wait..."):
+
+if not uploaded_file:
+    st.info("Upload an invoice from the sidebar to begin. PDFs, JPG, and PNG files are supported.")
+    st.stop()
+
+if uploaded_file.type not in SUPPORTED_TYPES:
+    st.error("Unsupported file type. Please upload a PDF, JPG, or PNG invoice.")
+    st.stop()
+if uploaded_file.size > MAX_FILE_SIZE_MB * 1024 * 1024:
+    st.error(f"This file is over the {MAX_FILE_SIZE_MB} MB limit. Please choose a smaller file.")
+    st.stop()
+
+file_bytes = uploaded_file.getvalue()
+file_id = hashlib.sha256(file_bytes).hexdigest()
+reset_results_for(file_id)
+
+top_left, top_right = st.columns([3, 1])
+with top_left:
+    st.subheader(uploaded_file.name, divider="gray")
+    st.caption(f"{SUPPORTED_TYPES[uploaded_file.type]} · {uploaded_file.size / 1024 / 1024:.2f} MB")
+with top_right:
+    analyze_clicked = st.button(
+        "Analyze with Gemini", type="primary", use_container_width=True, disabled=not api_key
+    )
+
+if "extracted_text" not in st.session_state:
+    with st.status("Reading document", expanded=False) as status:
         try:
-            file_bytes = uploaded_file.read()
-            if file_type == "application/pdf":
-                texts = extract_text_from_pdf(file_bytes)
-            else:
-                texts = extract_text_from_image(file_bytes)
-        except Exception as exc:
-            st.error(
-                "Sorry, we couldn't extract text from your file. "
-                f"Please check the file format or try another file.\nError: {exc}"
+            texts = (
+                extract_text_from_pdf(file_bytes)
+                if uploaded_file.type == "application/pdf"
+                else extract_text_from_image(file_bytes)
             )
+        except Exception as exc:
+            status.update(label="Could not read document", state="error")
+            st.error(f"We couldn't extract text from this file. Check the format and try again.\n\n{exc}")
             st.stop()
+        extracted_text = "\n".join(texts).strip()
+        if not extracted_text:
+            status.update(label="No readable text found", state="error")
+            st.warning("No text was found. Try a higher-quality scan or a text-based PDF.")
+            st.stop()
+        status.update(label="Document ready", state="complete", expanded=False)
+    st.session_state["extracted_text"] = extracted_text
+    st.session_state["extracted_pages"] = texts
+    st.session_state["fields"] = parse_invoice_fields(extracted_text)
 
-    if not texts or all(not t.strip() for t in texts):
-        st.warning(
-            "No text could be extracted from your file. "
-            "Please check the file quality or try another document."
-        )
-        st.stop()
+fields = st.session_state["fields"]
+metrics = st.columns(3)
+metrics[0].metric("Pages / images", len(extract_text_from_pdf(file_bytes)) if uploaded_file.type == "application/pdf" else 1)
+metrics[1].metric("Invoice number", fields["Invoice Number"].replace("Invoice", "").strip() or "Not detected")
+metrics[2].metric("Total", fields["Total Amount"].replace("Total", "").strip(" :-") or "Not detected")
 
-    show_extracted_text(texts)
-    fields = parse_invoice_fields(" ".join(texts))
+preview_tab, ai_tab = st.tabs(["Document preview", "AI extraction"])
+with preview_tab:
+    show_extracted_text(st.session_state.get("extracted_pages", [st.session_state["extracted_text"]]))
     show_invoice_table(fields)
     show_download_buttons(fields)
-    st.session_state["extracted_text"] = " ".join(texts)
-    st.session_state["fields"] = fields
 
-# ---------------------------------------------------------------------------
-# Gemini AI analysis
-# ---------------------------------------------------------------------------
-if st.button("Analyze Invoice", disabled=not (uploaded_file and api_key)):
-    if not api_key:
-        st.error("API key required. Please set your Google API key in the .env file.")
-    elif not uploaded_file:
-        st.error("Please upload an invoice file to analyze.")
-    else:
-        with st.spinner("Analyzing your invoice with Gemini AI. This may take a few seconds..."):
-            try:
-                response = get_gemini_response(
-                    api_key,
-                    st.session_state.get("extracted_text", ""),
-                    input_prompt,
-                )
-            except Exception as exc:
-                st.error(
-                    "Sorry, there was an error communicating with the AI model. "
-                    f"Please try again later.\nError: {exc}"
-                )
-                st.stop()
-
+if analyze_clicked:
+    with st.spinner("Gemini is structuring your invoice…"):
         try:
-            cleaned_response = extract_json_from_response(response)
-            processed_json = json.loads(cleaned_response)
-            st.session_state["gemini_result"] = processed_json
+            response = get_gemini_response(api_key, st.session_state["extracted_text"], input_prompt)
+            st.session_state["gemini_result"] = json.loads(extract_json_from_response(response))
             st.session_state.pop("gemini_raw", None)
-        except Exception:
+        except json.JSONDecodeError:
             st.session_state["gemini_result"] = None
             st.session_state["gemini_raw"] = response
-            st.error(
-                "The AI response could not be parsed as valid JSON. "
-                "Please check the raw output below or try a different prompt."
-            )
+        except Exception as exc:
+            st.error(f"Gemini could not analyze this invoice. Please try again.\n\n{exc}")
 
-# ---------------------------------------------------------------------------
-# Display latest Gemini result
-# ---------------------------------------------------------------------------
-if st.session_state.get("gemini_result") is not None:
-    processed_json = st.session_state["gemini_result"]
-    show_json_table(processed_json)
+with ai_tab:
+    if st.session_state.get("gemini_result") is not None:
+        result = st.session_state["gemini_result"]
+        show_json_table(result)
+        csv_data = build_gemini_csv(result)
+        json_data = json.dumps(result, indent=2, ensure_ascii=False)
+        col1, col2 = st.columns(2)
+        col1.download_button("Download AI CSV", csv_data, "invoice_ai.csv", "text/csv", use_container_width=True)
+        col2.download_button("Download AI JSON", json_data, "invoice_ai.json", "application/json", use_container_width=True)
+    elif "gemini_raw" in st.session_state:
+        st.warning("The model returned an unexpected format. Raw response is available below.")
+        st.code(st.session_state["gemini_raw"], language="json")
+    else:
+        st.info("Choose “Analyze with Gemini” to extract line items and detailed invoice fields.")
 
-    csv_data = build_gemini_csv(processed_json)
-    json_data = json.dumps(processed_json, indent=2)
-    col1, col2 = st.columns(2)
-    with col1:
-        st.download_button(
-            "Download as CSV", csv_data, file_name="invoice_gemini.csv", mime="text/csv"
-        )
-    with col2:
-        st.download_button(
-            "Download as JSON", json_data, file_name="invoice_gemini.json", mime="application/json"
-        )
-elif (
-    "gemini_result" in st.session_state
-    and st.session_state["gemini_result"] is None
-    and "gemini_raw" in st.session_state
-):
-    st.info("Gemini output is not valid JSON. See raw output below for debugging.")
-    st.code(st.session_state["gemini_raw"], language="json")
-
-# ---------------------------------------------------------------------------
-# Footer
-# ---------------------------------------------------------------------------
-st.markdown(
-    """
-<hr style='margin-top:2em;'>
-<div style='text-align:center;font-size:1rem;color:#888;'>
-  View source or contribute on
-  <a href='https://github.com/pratstick/AI-Invoice-Extractor'
-     target='_blank' style='color:#2d6cdf;text-decoration:underline;'>GitHub</a>.<br>
-  <span style='font-size:0.95rem;color:#aaa;'>
-    Powered by <span style='color:#4285F4;font-weight:600;'>Google Gemini</span>
-  </span>
-</div>
-""",
-    unsafe_allow_html=True,
-)
+st.caption("AI results can be inaccurate—confirm totals and payment details before using them operationally.")

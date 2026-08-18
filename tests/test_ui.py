@@ -35,6 +35,12 @@ def test_extract_json_array():
     assert parsed[0]["description"] == "Widget"
 
 
+def test_extract_json_ignores_braces_in_surrounding_prose():
+    raw = 'Note {not data}. Result: {"invoice_number": "INV-42"} Thanks.'
+    result = extract_json_from_response(raw)
+    assert json.loads(result)["invoice_number"] == "INV-42"
+
+
 def test_build_gemini_csv_single_invoice_no_line_items():
     data = {"invoice_number": "INV-001", "total_amount": "200.00"}
     csv_out = build_gemini_csv(data)

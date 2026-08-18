@@ -108,6 +108,21 @@ def show_json_table(json_data) -> None:
     """
     invoices: list[dict] = json_data if isinstance(json_data, list) else [json_data]
 
+    # The "Line Items Only" prompt returns an array of items, not invoices.
+    # Present that shape directly instead of treating each item as an invoice.
+    if isinstance(json_data, list) and json_data and all(
+        isinstance(item, dict) and "line_items" not in item
+        and any(key in item for key in ("description", "quantity", "unit_price", "total"))
+        for item in json_data
+    ):
+        st.markdown(
+            "<div style='font-size:1.5rem;font-weight:700;color:#2d6cdf;"
+            "margin-bottom:0.5em;'>Line Items</div>",
+            unsafe_allow_html=True,
+        )
+        show_itable(pd.DataFrame(json_data), maxBytes=0)
+        return
+
     # --- Line items table ---
     all_rows: list[dict] = []
     for invoice in invoices:
@@ -152,7 +167,17 @@ def extract_json_from_response(response_text: str) -> str:
 
     Strips markdown code fences and any surrounding prose.
     """
-    cleaned = re.sub(r"^\s*```[a-zA-Z]*", "", response_text.strip())
-    cleaned = re.sub(r"```\s*$", "", cleaned)
-    match = re.search(r"(\{[\s\S]*\}|\[[\s\S]*\])", cleaned)
-    return match.group(1) if match else response_text
+    cleaned = re.sub(r"^\s*```(?:json)?\s*", "", response_text.strip(), flags=re.I)
+    cleaned = re.sub(r"\s*```\s*$", "", cleaned)
+
+    # A greedy regex breaks when prose contains braces or the response has more
+    # than one JSON-looking fragment. The decoder reliably finds the first
+    # complete JSON value instead.
+    decoder = json.JSONDecoder()
+    for match in re.finditer(r"[\[{]", cleaned):
+        try:
+            value, _ = decoder.raw_decode(cleaned[match.start() :])
+        except json.JSONDecodeError:
+            continue
+        return json.dumps(value)
+    return cleaned

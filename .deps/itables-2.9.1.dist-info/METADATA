@@ -1,0 +1,271 @@
+Metadata-Version: 2.4
+Name: itables
+Version: 2.9.1
+Summary: Python DataFrames as interactive DataTables
+Project-URL: Homepage, https://itables.org/
+Project-URL: Documentation, https://itables.org
+Project-URL: Repository, https://github.com/mwouts/itables.git
+Project-URL: Issues, https://github.com/mwouts/itables/issues
+Project-URL: Changelog, https://github.com/mwouts/itables/blob/main/docs/changelog.md
+Author-email: Marc Wouts <marc.wouts@gmail.com>
+Maintainer-email: Marc Wouts <marc.wouts@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2019-2026 Marc Wouts
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: DataTables,Interactive,Javascript,Narwhals,Pandas,Polars
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: Dash
+Classifier: Framework :: Jupyter
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Provides-Extra: all
+Requires-Dist: anywidget; extra == 'all'
+Requires-Dist: dash; extra == 'all'
+Requires-Dist: ipython; extra == 'all'
+Requires-Dist: marimo; extra == 'all'
+Requires-Dist: matplotlib; extra == 'all'
+Requires-Dist: modin[dask]; extra == 'all'
+Requires-Dist: narwhals; extra == 'all'
+Requires-Dist: pandas; extra == 'all'
+Requires-Dist: platformdirs; extra == 'all'
+Requires-Dist: polars; extra == 'all'
+Requires-Dist: pyarrow; extra == 'all'
+Requires-Dist: pytz; extra == 'all'
+Requires-Dist: shiny; extra == 'all'
+Requires-Dist: shinywidgets; extra == 'all'
+Requires-Dist: streamlit; extra == 'all'
+Requires-Dist: tomli; (python_version < '3.11') and extra == 'all'
+Requires-Dist: traitlets; extra == 'all'
+Requires-Dist: typeguard>=4.4.1; extra == 'all'
+Requires-Dist: typing-extensions; extra == 'all'
+Requires-Dist: typing-extensions; (python_version < '3.11') and extra == 'all'
+Requires-Dist: world-bank-data; extra == 'all'
+Provides-Extra: check-type
+Requires-Dist: typeguard>=4.4.1; extra == 'check-type'
+Provides-Extra: config
+Requires-Dist: platformdirs; extra == 'config'
+Requires-Dist: tomli; (python_version < '3.11') and extra == 'config'
+Provides-Extra: dash
+Requires-Dist: dash; extra == 'dash'
+Requires-Dist: typing-extensions; extra == 'dash'
+Provides-Extra: dev
+Requires-Dist: anywidget; extra == 'dev'
+Requires-Dist: dash; extra == 'dev'
+Requires-Dist: ipykernel; extra == 'dev'
+Requires-Dist: ipython; extra == 'dev'
+Requires-Dist: jupyterlab; extra == 'dev'
+Requires-Dist: jupytext; extra == 'dev'
+Requires-Dist: marimo; extra == 'dev'
+Requires-Dist: matplotlib; extra == 'dev'
+Requires-Dist: modin[dask]; extra == 'dev'
+Requires-Dist: narwhals; extra == 'dev'
+Requires-Dist: nbconvert; extra == 'dev'
+Requires-Dist: pandas; extra == 'dev'
+Requires-Dist: pandas-stubs; extra == 'dev'
+Requires-Dist: platformdirs; extra == 'dev'
+Requires-Dist: polars; extra == 'dev'
+Requires-Dist: pyarrow; extra == 'dev'
+Requires-Dist: pyright; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: pytest-cov; extra == 'dev'
+Requires-Dist: pytest-xdist; extra == 'dev'
+Requires-Dist: pytz; extra == 'dev'
+Requires-Dist: requests; extra == 'dev'
+Requires-Dist: shiny; extra == 'dev'
+Requires-Dist: shinywidgets; extra == 'dev'
+Requires-Dist: streamlit; extra == 'dev'
+Requires-Dist: tomli; (python_version < '3.11') and extra == 'dev'
+Requires-Dist: traitlets; extra == 'dev'
+Requires-Dist: typeguard>=4.4.1; extra == 'dev'
+Requires-Dist: typing-extensions; extra == 'dev'
+Requires-Dist: typing-extensions; (python_version < '3.11') and extra == 'dev'
+Requires-Dist: watchfiles; extra == 'dev'
+Requires-Dist: world-bank-data; extra == 'dev'
+Provides-Extra: marimo
+Requires-Dist: marimo; extra == 'marimo'
+Provides-Extra: narwhals
+Requires-Dist: narwhals; extra == 'narwhals'
+Provides-Extra: notebook
+Requires-Dist: ipython; extra == 'notebook'
+Provides-Extra: other-dataframes
+Requires-Dist: modin[dask]; extra == 'other-dataframes'
+Requires-Dist: narwhals; extra == 'other-dataframes'
+Requires-Dist: pyarrow; extra == 'other-dataframes'
+Provides-Extra: pandas
+Requires-Dist: pandas; extra == 'pandas'
+Provides-Extra: polars
+Requires-Dist: polars; extra == 'polars'
+Provides-Extra: samples
+Requires-Dist: pytz; extra == 'samples'
+Requires-Dist: world-bank-data; extra == 'samples'
+Provides-Extra: shiny
+Requires-Dist: shiny; extra == 'shiny'
+Requires-Dist: shinywidgets; extra == 'shiny'
+Provides-Extra: streamlit
+Requires-Dist: streamlit; extra == 'streamlit'
+Provides-Extra: style
+Requires-Dist: matplotlib; extra == 'style'
+Requires-Dist: pandas; extra == 'style'
+Provides-Extra: test-all
+Requires-Dist: anywidget; extra == 'test-all'
+Requires-Dist: dash; extra == 'test-all'
+Requires-Dist: ipykernel; extra == 'test-all'
+Requires-Dist: ipython; extra == 'test-all'
+Requires-Dist: jupytext; extra == 'test-all'
+Requires-Dist: marimo; extra == 'test-all'
+Requires-Dist: matplotlib; extra == 'test-all'
+Requires-Dist: modin[dask]; extra == 'test-all'
+Requires-Dist: narwhals; extra == 'test-all'
+Requires-Dist: nbconvert; extra == 'test-all'
+Requires-Dist: pandas; extra == 'test-all'
+Requires-Dist: platformdirs; extra == 'test-all'
+Requires-Dist: polars; extra == 'test-all'
+Requires-Dist: pyarrow; extra == 'test-all'
+Requires-Dist: pytest; extra == 'test-all'
+Requires-Dist: pytest-cov; extra == 'test-all'
+Requires-Dist: pytest-xdist; extra == 'test-all'
+Requires-Dist: pytz; extra == 'test-all'
+Requires-Dist: requests; extra == 'test-all'
+Requires-Dist: shiny; extra == 'test-all'
+Requires-Dist: shinywidgets; extra == 'test-all'
+Requires-Dist: streamlit; extra == 'test-all'
+Requires-Dist: tomli; (python_version < '3.11') and extra == 'test-all'
+Requires-Dist: traitlets; extra == 'test-all'
+Requires-Dist: typeguard>=4.4.1; extra == 'test-all'
+Requires-Dist: typing-extensions; extra == 'test-all'
+Requires-Dist: typing-extensions; (python_version < '3.11') and extra == 'test-all'
+Requires-Dist: world-bank-data; extra == 'test-all'
+Provides-Extra: test-base
+Requires-Dist: pytest; extra == 'test-base'
+Requires-Dist: pytest-cov; extra == 'test-base'
+Requires-Dist: pytest-xdist; extra == 'test-base'
+Provides-Extra: test-dash
+Requires-Dist: dash; extra == 'test-dash'
+Requires-Dist: pytest; extra == 'test-dash'
+Requires-Dist: pytest-cov; extra == 'test-dash'
+Requires-Dist: pytest-xdist; extra == 'test-dash'
+Requires-Dist: typing-extensions; extra == 'test-dash'
+Provides-Extra: test-notebook
+Requires-Dist: anywidget; extra == 'test-notebook'
+Requires-Dist: ipykernel; extra == 'test-notebook'
+Requires-Dist: ipython; extra == 'test-notebook'
+Requires-Dist: jupytext; extra == 'test-notebook'
+Requires-Dist: nbconvert; extra == 'test-notebook'
+Requires-Dist: pytest; extra == 'test-notebook'
+Requires-Dist: pytest-cov; extra == 'test-notebook'
+Requires-Dist: pytest-xdist; extra == 'test-notebook'
+Requires-Dist: requests; extra == 'test-notebook'
+Requires-Dist: traitlets; extra == 'test-notebook'
+Provides-Extra: typing
+Requires-Dist: typing-extensions; (python_version < '3.11') and extra == 'typing'
+Provides-Extra: widget
+Requires-Dist: anywidget; extra == 'widget'
+Requires-Dist: traitlets; extra == 'widget'
+Description-Content-Type: text/markdown
+
+![ITables logo](https://raw.githubusercontent.com/mwouts/itables/3f8e8bd75af7ad38a500518fcb4fbbc370ea6c4c/itables/logo/wide.svg)
+
+[![CI](https://github.com/mwouts/itables/actions/workflows/continuous-integration.yml/badge.svg?branch=main)](https://github.com/mwouts/itables/actions)
+[![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
+[![MIT License](https://img.shields.io/github/license/mwouts/itables)](LICENSE)
+[![Pypi](https://img.shields.io/pypi/v/itables.svg)](https://pypi.python.org/pypi/itables)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/itables.svg)](https://anaconda.org/conda-forge/itables)
+[![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
+ ![PyPI - Types](https://img.shields.io/pypi/types/itables)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](https://itables.org/apps/widget.html)
+[![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](https://itables.org/apps/dash.html)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://itables.streamlit.app)
+
+This package changes how Pandas and Polars DataFrames are rendered in Python notebooks and applications.
+With `itables` you can display your tables as interactive [DataTables](https://datatables.net/)
+that you can sort, paginate, scroll or filter.
+
+ITables is just about how tables are displayed. You can turn it on and off in just two lines,
+with no other impact on your data workflow.
+
+Since v2.6.0, ITables has no dependencies. It works out of the box with Pandas or Polars in Jupyter, Dash, Streamlit, Shiny, Panel or Marimo—you only need these packages installed. The Jupyter Widget is the sole exception, requiring `anywidget`. With Narwhals installed, ITables can also display DataFrames from other libraries like cuDF, Modin or PyArrow.
+
+## Documentation
+
+Browse the [documentation](https://itables.org/) to see
+examples of Pandas or Polars DataFrames rendered as interactive DataTables.
+
+## Quick start
+
+Install the `itables` package with either
+```shell
+pip install itables
+```
+
+or
+```shell
+conda install itables -c conda-forge
+```
+
+Activate the interactive mode for all series and dataframes in Jupyter with
+```python
+import itables
+
+itables.init_notebook_mode()
+```
+and then render any DataFrame as an interactive table that you can sort, search and explore:
+![df](docs/df_example.png)
+
+If you prefer to render only selected DataFrames as interactive tables, call `itables.init_notebook_mode(all_interactive=False)`, then use `itables.show` to show just one Series or DataFrame as an interactive table:
+![show](docs/show_df.png)
+
+
+## ITables in Notebooks
+
+ITables works in all the usual Jupyter Notebook environments, including Jupyter Notebook, Jupyter Lab, Jupyter nbconvert (i.e. the tables are still interactive in the HTML export of a notebook), Jupyter Book, Google Colab and Kaggle.
+
+You can also use ITables in [Quarto](https://itables.org/quarto.html) HTML documents, and in RISE presentations.
+
+ITables works well in VS Code, both in Jupyter Notebooks and in interactive Python sessions.
+
+## ITables in Python applications
+
+ITables is also available as
+- a [Jupyter Widget](https://itables.org/widget.html)
+- a [Dash](https://itables.org/dash.html) component
+- a [Streamlit](https://itables.org/streamlit.html) component,
+- and it also works in [Shiny](https://itables.org/shiny.html) applications.
+
+## Licence
+
+ITables is developed by [Marc Wouts](https://github.com/mwouts) on [GitHub](https://github.com/mwouts/itables),
+under an MIT license.
+
+ITables is a wrapper for [datatables.net](https://datatables.net/) which is developed by Allan Jardine
+[(sponsor him!)](https://github.com/sponsors/AllanJard), also under an MIT license.
